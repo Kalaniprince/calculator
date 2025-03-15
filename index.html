@@ -3,7 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <title>Simple Calculator</title>
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+    }
+
+    .calculator {
+      background-color: #2d2d2d;
+      padding: 7px;
+      border-radius: 7px;
+      width: 105px;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+      box-sizing: border-box;
+    }
+
+    #display {
+      width: 100%;
+      height: 28px;
+      background-color: #fff;
+      border: none;
+      border-radius: 4px;
+      margin-bottom: 7px;
+      text-align: right;
+      padding: 4px;
+      font-size: 11px;
+      color: #333;
+      box-sizing: border-box;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+    }
+
+    button {
+      background: linear-gradient(135deg, #6e6e6e, #4a4a4a);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 6px;
+      font-size: 10px;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    button:active {
+      transform: translateY(1px);
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    }
+  </style>
 </head>
 <body>
   <div class="calculator">
@@ -28,6 +89,51 @@
       <button onclick="appendToDisplay('+')">+</button>
     </div>
   </div>
-  <script src="script.js"></script>
+  <script>
+    let display = document.getElementById('display');
+    let currentInput = '';
+
+    function appendToDisplay(value) {
+      currentInput += value;
+      display.value = currentInput;
+    }
+
+    function clearDisplay() {
+      currentInput = '';
+      display.value = '';
+    }
+
+    function calculate() {
+      try {
+        currentInput = eval(currentInput).toString();
+        display.value = currentInput;
+      } catch (error) {
+        display.value = 'Error';
+        currentInput = '';
+      }
+    }
+
+    display.addEventListener('keydown', function(event) {
+      const key = event.key;
+      if (/[0-9+\-*/.]/.test(key)) {
+        event.preventDefault();
+        appendToDisplay(key);
+      } else if (key === 'Enter') {
+        event.preventDefault();
+        calculate();
+      } else if (key === 'Backspace') {
+        event.preventDefault();
+        currentInput = currentInput.slice(0, -1);
+        display.value = currentInput;
+      } else if (key === 'c' || key === 'C') {
+        event.preventDefault();
+        clearDisplay();
+      }
+    });
+
+    display.addEventListener('input', function() {
+      currentInput = display.value;
+    });
+  </script>
 </body>
 </html>
